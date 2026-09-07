@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisan CropSlot — Arhtiya Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bar-top"></div>
+
+<div class="stage">
+
+  <header class="deck-head">
+    <div>
+      <h1>Arhtiya Dashboard</h1>
+      <p>Kisan CropSlot — verification, assisted registration and payment visibility for commission agents at MSP procurement centres.</p>
+    </div>
+    <div class="ctx">
+      <div class="ctx-mandi">Khanna Mandi · खन्ना मंडी</div>
+      <div class="ctx-sub">Ludhiana, Punjab</div>
+      <div class="ctx-sub" id="ctxDate">Wheat season</div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true"  data-s="s1">Today's Overview</button>
+    <button class="tab" role="tab" aria-selected="false" data-s="s2">Farmer Verification</button>
+    <button class="tab" role="tab" aria-selected="false" data-s="s3">Assisted Registration</button>
+    <button class="tab" role="tab" aria-selected="false" data-s="s4">J-Form &amp; Payment</button>
+    <button class="tab" role="tab" aria-selected="false" data-s="s5">Commission Summary</button>
+  </nav>
+
+  <!-- ================= SCREEN 1 : OVERVIEW ================= -->
+  <section class="screen on" id="s1" role="tabpanel" aria-label="Today's overview">
+    <div class="screen-head">
+      <h2>Farmers booked with you today</h2>
+      <div class="sub">Sorted by slot time. Select a farmer to verify their arrival.</div>
+    </div>
+
+    <div class="grid-3 mb20">
+      <div class="card stat"><div class="n" id="statBooked">0</div><div class="l">Slots booked today / आज के स्लॉट</div></div>
+      <div class="card stat"><div class="n o" id="statWaiting">0</div><div class="l">Waiting for weighment</div></div>
+      <div class="card stat"><div class="n g" id="statPaid">0</div><div class="l">Payment released</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Slot</th><th>Farmer / किसान</th><th>Crop &amp; quantity</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody id="farmerRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside class="card side">
+        <h3>Yard capacity right now</h3>
+        <div class="hint">Khanna Mandi sets its own hourly intake limit. Booking closes automatically when the yard is full.</div>
+        <div class="capbar" role="img" aria-label="Yard occupancy">
+          <div class="capbar-fill" id="capFill"></div>
+        </div>
+        <div class="kv"><span>Trolleys inside</span><span id="capText">31 of 40</span></div>
+        <div class="kv"><span>Next open slot</span><span>Tue, 6:00–8:00</span></div>
+        <div class="kv"><span>Avg. turnaround today</span><span>3 hr 40 min</span></div>
+        <div class="divide"></div>
+        <h3>Need to add a farmer?</h3>
+        <div class="hint">If a farmer has asked you for help booking, you can enter their details for them.</div>
+        <button class="btn ghost full mt12" data-go="s3">Open assisted registration</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 2 : VERIFICATION ================= -->
+  <section class="screen" id="s2" role="tabpanel" aria-label="Farmer verification">
+    <div class="screen-head">
+      <h2 id="verName">Verify arrival</h2>
+      <div class="sub" id="verSub"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card pad20">
+        <div class="ver-top">
+          <div class="qr" id="qrBox"></div>
+          <div>
+            <div class="micro">Token number</div>
+            <div class="token big" id="verToken">—</div>
+            <div class="micro mt10" id="verMeta"></div>
+          </div>
+        </div>
+
+        <div class="divide"></div>
+        <div id="checklist"></div>
+
+        <div class="row mt18">
+          <button class="btn" id="confirmBtn">Confirm and send to farmer</button>
+          <button class="btn ghost" id="saveBtn">Save for later</button>
+        </div>
+        <div id="verMsg" class="msg"></div>
+      </div>
+
+      <aside class="card side">
+        <h3>What the farmer sees</h3>
+        <div class="hint">Every entry you make here reaches the farmer's phone within seconds — by SMS if he has no smartphone.</div>
+        <div class="divide"></div>
+        <div id="mirrorList"></div>
+        <div class="divide"></div>
+        <div class="hint note-blue">
+          Readings are logged once and cannot be edited after the farmer is notified. Corrections are recorded as a separate entry.
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 3 : ASSISTED REGISTRATION ================= -->
+  <section class="screen" id="s3" role="tabpanel" aria-label="Assisted registration">
+    <div class="screen-head">
+      <h2>Register a farmer who asked for help</h2>
+      <div class="sub">For farmers who don't use a smartphone, or who asked you to book on their behalf.</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card pad20">
+        <span class="badge-assist">
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+            <circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M7 4v3.5l2 1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          Assisted registration
+        </span>
+
+        <div class="anchor-field mt18">
+          <label class="lab" for="regPhone">Farmer's own mobile number / किसान का मोबाइल नंबर</label>
+          <input id="regPhone" type="tel" inputmode="tel" placeholder="+91 —— —— ——">
+          <div class="note">This number becomes the farmer's account. All slot updates, weighment readings and payment alerts go directly to him — not to you.</div>
+        </div>
+
+        <div class="field mt16">
+          <label for="regName">Farmer's name / किसान का नाम</label>
+          <input id="regName" type="text" placeholder="Full name">
+        </div>
+        <div class="field">
+          <label for="regVillage">Village</label>
+          <input id="regVillage" type="text" placeholder="Village, district">
+        </div>
+        <div class="two-up">
+          <div class="field">
+            <label for="regCrop">Crop</label>
+            <select id="regCrop"><option>Wheat</option><option>Paddy</option></select>
+          </div>
+          <div class="field">
+            <label for="regQty">Expected quantity (quintal)</label>
+            <input id="regQty" type="number" min="1" placeholder="e.g. 58">
+          </div>
+        </div>
+        <div class="field">
+          <label for="regReady">When will the crop be ready to move?</label>
+          <select id="regReady">
+            <option value="1">Tomorrow</option>
+            <option value="2" selected>In 2 days</option>
+            <option value="4">In 4 days</option>
+            <option value="0">Not sure yet — remind me</option>
+          </select>
+        </div>
+
+        <div class="selfnote">
+          Slots are offered only from the day the crop is ready. The farmer is never given a date he can't reach — his harvest date decides the slot, not the calendar.
+        </div>
+
+        <div class="row mt18">
+          <button class="btn" id="regBtn">Send slot options to farmer</button>
+          <button class="btn ghost" id="regClear">Clear</button>
+        </div>
+        <div id="regMsg" class="msg"></div>
+
+        <div id="slotPick" class="slotpick" hidden>
+          <div class="micro mb8">Farmer replied by SMS with his choice:</div>
+          <div class="slot-options" id="slotOptions"></div>
+        </div>
+      </div>
+
+      <aside class="card side">
+        <h3>This is help, not a gate</h3>
+        <div class="hint">A farmer never needs you to get onto Kisan CropSlot. He can register and book himself at any time by SMS, by calling the helpline, or in the app.</div>
+        <div class="divide"></div>
+        <div class="kv"><span>Farmer books himself</span><span>SMS / IVR / app</span></div>
+        <div class="kv"><span>You book for him</span><span>Only when asked</span></div>
+        <div class="kv"><span>Account belongs to</span><span>The farmer</span></div>
+        <div class="kv"><span>He can change agent</span><span>Any time</span></div>
+        <div class="divide"></div>
+        <div class="hint">Because the account sits on the farmer's own number, he keeps full visibility of his slot, weighment and payment even if you entered the details for him.</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 4 : PAYMENT ================= -->
+  <section class="screen" id="s4" role="tabpanel" aria-label="J-Form and payment status">
+    <div class="screen-head">
+      <h2>J-Form and payment status</h2>
+      <div class="sub">Payment is due within 48 hours of procurement under DBT, and within 72 hours of J-Form issue in Haryana.</div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th class="w26">Farmer</th><th class="w15">J-Form</th><th class="w44">Payment stage</th><th class="w15">Time elapsed</th></tr>
+          </thead>
+          <tbody id="payRows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-2 mt20">
+      <aside class="card side">
+        <h3>Where a payment usually stops</h3>
+        <div class="hint">When a case crosses the norm, the reason is shown here and to the market committee at the same time — so it can be chased instead of guessed at.</div>
+        <div class="divide"></div>
+        <div id="blockList"></div>
+      </aside>
+      <aside class="card side">
+        <h3>Nothing here is hidden from the farmer</h3>
+        <div class="hint">Each farmer sees the same three stages on his own phone, with the same timestamps. If a payment crosses the norm, he is told why — he doesn't have to come to the mandi to ask.</div>
+        <div class="divide"></div>
+        <div class="kv"><span>Cases past 48 hrs</span><span id="breachCount">—</span></div>
+        <div class="kv"><span>Flagged to committee</span><span>Automatically</span></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 5 : COMMISSION ================= -->
+  <section class="screen" id="s5" role="tabpanel" aria-label="Commission summary">
+    <div class="screen-head">
+      <h2>Your commission this season</h2>
+      <div class="sub">Calculated at the notified government rate. Kisan CropSlot does not change how or what you are paid.</div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="comm-hero">
+          <div class="amt" id="commTotal">₹ 0</div>
+          <div class="cap" id="commCap">—</div>
+
+          <div class="rate-row">
+            <div class="rate">Wheat rate <b>₹50.75 / qtl</b></div>
+            <div class="rate">Paddy rate <b>₹50.61 / qtl</b></div>
+            <div class="rate">Today <b id="commToday">₹0</b></div>
+          </div>
+
+          <div class="assurance">
+            These are the rates notified by the Department of Food and Public Distribution for 2026–27. The platform only records quantity and generates the J-Form — your commission is calculated on the same basis as before, and paid by the same agency as before.
+          </div>
+        </div>
+        <div class="foot">Figures shown are illustrative sample data for demonstration.</div>
+      </div>
+
+      <aside class="card side">
+        <h3>This month</h3>
+        <div class="divide mt10"></div>
+        <div class="kv"><span>Farmers handled</span><span>42</span></div>
+        <div class="kv"><span>Quantity</span><span>2,410 qtl</span></div>
+        <div class="kv"><span>Commission</span><span>₹1,22,307</span></div>
+        <div class="kv"><span>Paid to date</span><span>₹98,140</span></div>
+        <div class="kv"><span>Awaiting release</span><span>₹24,167</span></div>
+        <div class="divide"></div>
+        <button class="btn ghost full" id="dlBtn">Download statement</button>
+        <div id="dlMsg" class="msg"></div>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="repo-foot">
+    Prototype · Kisan CropSlot · Smart India Hackathon 2026 · Problem Statement SIH26032
+  </footer>
+</div>
+
+<div class="bar-bottom"></div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
